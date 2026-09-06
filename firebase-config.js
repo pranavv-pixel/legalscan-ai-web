@@ -83,6 +83,7 @@ const firebaseConfig = {
   storageBucket: "legalscan-ai-web-1ff48.firebasestorage.app",
   messagingSenderId: "580653211253",
   appId: "1:580653211253:web:536e1f1a3fd044c645223c"
+};
 
 // Used by app.js to detect whether the placeholders above have been
 // replaced yet, so it can show a clear banner instead of a login form
