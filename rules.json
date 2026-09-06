@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "regulationRef": "Legal Metrology (Packaged Commodities) Rules, 2011",
+  "requiredFields": [
+    {
+      "id": "mrp",
+      "label": "Maximum Retail Price (MRP)",
+      "severity": "critical",
+      "hint": "Must be inclusive-of-all-taxes retail price"
+    },
+    {
+      "id": "netQuantity",
+      "label": "Net Quantity",
+      "severity": "critical",
+      "hint": "Must use standard units only"
+    },
+    {
+      "id": "mfgDate",
+      "label": "Manufacturing / Packing / Import Date",
+      "severity": "critical",
+      "hint": "Month and year at minimum"
+    },
+    {
+      "id": "manufacturer",
+      "label": "Name & Address of Manufacturer / Packer / Importer",
+      "severity": "critical",
+      "hint": "Full postal address required"
+    },
+    {
+      "id": "consumerCare",
+      "label": "Consumer Care / Customer Support Details",
+      "severity": "minor",
+      "hint": "Phone number or email for complaints"
+    },
+    {
+      "id": "countryOfOrigin",
+      "label": "Country of Origin",
+      "severity": "minor",
+      "hint": "Required for imported goods"
+    }
+  ],
+  "allowedUnits": ["g", "kg", "ml", "l", "gm", "gms", "kgs", "mg", "litre", "litres"],
+  "disallowedAmbiguousUnits": ["oz", "lb", "lbs", "fl oz", "pt", "gallon"],
+  "minOcrConfidence": 60,
+  "minFontProminenceRatio": 0.012,
+  "hindiKeywords": {
+    "mrp": ["अधिकतम खुदरा मूल्य", "मूल्य"],
+    "netQuantity": ["निवल मात्रा", "मात्रा"],
+    "mfgDate": ["निर्माण तिथि", "पैकिंग तिथि", "उत्पादन तिथि"],
+    "manufacturer": ["निर्माता", "पैकर", "आयातक"],
+    "consumerCare": ["उपभोक्ता सेवा", "शिकायत", "हेल्पलाइन"],
+    "countryOfOrigin": ["मूल देश"]
+  },
+  "ocrLanguageOptions": [
+    { "code": "eng", "label": "English only (fastest)" },
+    { "code": "eng+hin", "label": "English + Hindi (recommended)" },
+    { "code": "eng+hin+mar", "label": "English + Hindi + Marathi" },
+    { "code": "eng+hin+guj", "label": "English + Hindi + Gujarati" },
+    { "code": "eng+hin+tam", "label": "English + Hindi + Tamil" },
+    { "code": "eng+hin+tel", "label": "English + Hindi + Telugu" },
+    { "code": "eng+hin+kan", "label": "English + Hindi + Kannada" },
+    { "code": "eng+hin+ben", "label": "English + Hindi + Bengali" },
+    { "code": "eng+hin+pan", "label": "English + Hindi + Punjabi" }
+  ],
+  "defaultOcrLanguage": "eng+hin",
+  "notes": "Thresholds are editable from the Rules & Standards screen. Stored as data, not hardcoded in the scanning logic, so they can be amended without touching code."
+}

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LegalScan AI — Compliance Intelligence</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN / SIGN UP OVERLAY -->
+<div class="login-overlay" id="login-overlay">
+  <div class="login-card">
+    <div class="login-brand">⚖️ LegalScan AI</div>
+    <div class="login-sub">Legal Metrology Compliance Scanner</div>
+
+    <div class="login-banner" id="firebase-config-banner" style="display:none;"></div>
+
+    <div class="login-tabs">
+      <button type="button" class="login-tab active" data-tab="login" id="tab-login">Log In</button>
+      <button type="button" class="login-tab" data-tab="signup" id="tab-signup">Sign Up</button>
+    </div>
+
+    <form id="login-form" autocomplete="off">
+      <div class="login-field signup-only" id="field-name">
+        <label>Full Name</label>
+        <input type="text" id="login-name" placeholder="e.g. Rahul Sharma">
+      </div>
+      <div class="login-field signup-only" id="field-role">
+        <label>I am a</label>
+        <select id="login-role">
+          <option value="inspector">Inspection Officer / Regulator</option>
+          <option value="manufacturer">Manufacturer / Business (QA)</option>
+        </select>
+      </div>
+      <div class="login-field">
+        <label>Email</label>
+        <input type="email" id="login-email" placeholder="you@example.com" required>
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="•••••••• (min. 6 characters)" required minlength="6">
+      </div>
+      <div class="login-error" id="login-error"></div>
+      <button type="submit" class="btn primary login-submit" id="login-submit-btn">Log In</button>
+    </form>
+
+    <div class="login-divider"><span>or</span></div>
+    <button type="button" class="btn secondary login-consumer-btn" id="btn-continue-consumer">
+      🛒 Just checking a product? Continue as Consumer
+    </button>
+
+    <p class="login-note">Accounts and inspection data are stored in a real cloud database (Firebase). Inspector accounts can see every inspection submitted by every user; Manufacturer and Consumer accounts only see their own.</p>
+  </div>
+</div>
+
+<div class="app" id="app-root" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">LS</div>
+      <div>
+        <div class="brand-title">LegalScan AI</div>
+        <div class="brand-sub">Compliance Intelligence</div>
+      </div>
+    </div>
+
+    <nav class="nav-group">
+      <div class="nav-label">Workspace</div>
+      <button class="nav-item active" data-screen="dashboard">Dashboard</button>
+      <button class="nav-item" data-screen="new-inspection">New Inspection</button>
+      <button class="nav-item" data-screen="history">Inspection History</button>
+      <button class="nav-item" data-screen="analytics">Analytics</button>
+    </nav>
+
+    <nav class="nav-group">
+      <div class="nav-label">Compliance</div>
+      <button class="nav-item" data-screen="rules">Rules &amp; Standards</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="status-dot"></div>
+      <div>
+        <div class="status-title">System Operational</div>
+        <div class="status-sub">Inspection engine ready</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs">LegalScan AI / <span id="crumb-current">Dashboard</span></div>
+      <div class="officer">
+        <div class="scan-counter" id="scan-counter">0 inspections so far</div>
+        <select id="role-select" class="role-select" title="Switch role / view">
+          <option value="inspector">Inspector / Regulator</option>
+          <option value="manufacturer">Manufacturer / Business</option>
+          <option value="consumer">Consumer</option>
+        </select>
+        <div class="officer-avatar" id="officer-avatar">IO</div>
+        <div>
+          <div class="officer-name" id="officer-name">Inspection Officer</div>
+          <div class="officer-role" id="officer-role">Field Operations</div>
+        </div>
+        <button type="button" class="btn secondary logout-btn" id="btn-logout" title="Log out">Log Out</button>
+      </div>
+    </header>
+
+    <div class="content" id="content">
+
+      <!-- ===================== DASHBOARD ===================== -->
+      <section class="screen" id="screen-dashboard">
+        <div class="screen-head">
+          <div>
+            <h1>Inspection Dashboard</h1>
+            <p class="muted">Monitor packaged-product inspections, compliance findings and evidence.</p>
+          </div>
+          <button class="btn primary" data-goto="new-inspection">+ Start New Inspection</button>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label">INSPECTIONS</div>
+            <div class="stat-value" id="stat-total">0</div>
+            <div class="stat-note">all time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">COMPLIANT</div>
+            <div class="stat-value" id="stat-compliant">0</div>
+            <div class="stat-note" id="stat-compliant-rate">0% compliance rate</div>
+          </div>
+          <div class="stat-card warn">
+            <div class="stat-label">NEEDS REVIEW</div>
+            <div class="stat-value" id="stat-review">0</div>
+            <div class="stat-note" id="stat-review-rate">0% of inspections</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">EVIDENCE ITEMS</div>
+            <div class="stat-value" id="stat-evidence">0</div>
+            <div class="stat-note" id="stat-evidence-avg">0 average / inspection</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Recent Inspections</div>
+              <div class="muted small">Latest field inspection activity</div>
+            </div>
+            <button class="link-btn" data-goto="history">View All →</button>
+          </div>
+          <table class="table" id="recent-table">
+            <thead>
+              <tr><th>Inspection</th><th>Product</th><th>Location</th><th class="col-submitter">Submitted By</th><th>Score</th><th>Status</th><th>Date</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty-state" id="dashboard-empty">No inspections yet. Start your first inspection to see it here.</div>
+        </div>
+      </section>
+
+      <!-- ===================== NEW INSPECTION ===================== -->
+      <section class="screen" id="screen-new-inspection" style="display:none">
+        <div class="screen-head">
+          <div>
+            <h1 id="new-inspection-heading">New Inspection</h1>
+            <p class="muted" id="new-inspection-sub">Upload or capture package images for compliance scanning.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="dropzone" id="dropzone">
+            <div class="dz-icon">⬆</div>
+            <div class="dz-text">Drag &amp; drop package images here</div>
+            <div class="muted small">JPG, JPEG or PNG • Multiple images supported</div>
+            <div class="dz-actions">
+              <button class="btn primary" id="btn-choose-images">Choose Images</button>
+              <button class="btn secondary" id="btn-open-camera">Open Camera</button>
+            </div>
+            <input type="file" id="file-input" accept="image/*" multiple hidden>
+          </div>
+
+          <div class="form-grid" style="margin-top:16px;">
+            <div class="field">
+              <label>OCR Language (multilingual — many Indian labels are bilingual)</label>
+              <select id="meta-ocr-lang"></select>
+            </div>
+            <div class="field">
+              <label>Geotag (optional)</label>
+              <div class="dz-actions" style="justify-content:flex-start;margin-top:0;">
+                <button type="button" class="btn secondary" id="btn-attach-location">📍 Attach Current Location</button>
+              </div>
+              <div class="muted small" id="geo-status">No location attached yet.</div>
+            </div>
+          </div>
+
+          <div id="camera-wrap" class="camera-wrap" style="display:none">
+            <video id="camera-video" autoplay playsinline></video>
+            <div class="dz-actions">
+              <button class="btn primary" id="btn-capture">Capture</button>
+              <button class="btn secondary" id="btn-close-camera">Close Camera</button>
+            </div>
+          </div>
+
+          <div class="thumbs" id="thumbs"></div>
+
+          <div class="divider"></div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label>Product Category</label>
+              <select id="meta-category">
+                <option value="">Select category</option>
+                <option>Packaged Food</option>
+                <option>Cosmetic Product</option>
+                <option>Household Item</option>
+                <option>Electronics</option>
+                <option>Beverage</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field meta-officer-only">
+              <label>Inspection Location</label>
+              <input type="text" id="meta-location" placeholder="Enter city / inspection location">
+            </div>
+            <div class="field">
+              <label>Brand / Manufacturer</label>
+              <input type="text" id="meta-brand" placeholder="If visible on package">
+            </div>
+            <div class="field meta-officer-only">
+              <label>Batch / Lot Number</label>
+              <input type="text" id="meta-batch" placeholder="If visible on package">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn secondary" id="btn-cancel-inspection">Cancel</button>
+            <button class="btn primary" id="btn-analyze">Analyze Package →</button>
+          </div>
+
+          <div class="progress-wrap" id="progress-wrap" style="display:none">
+            <div class="progress-label" id="progress-label">Starting…</div>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== RESULTS ===================== -->
+      <section class="screen" id="screen-results" style="display:none">
+        <div class="screen-head">
+          <div>
+            <h1>Inspection Result</h1>
+            <p class="muted" id="results-sub">—</p>
+          </div>
+          <div class="result-actions">
+            <button class="btn secondary" id="btn-report-violation" style="display:none">🚩 Report Violation</button>
+            <button class="btn secondary" id="btn-dispute">Raise Dispute</button>
+            <button class="btn secondary" id="btn-export-csv">Export CSV</button>
+            <button class="btn secondary" id="btn-export-json">Export JSON</button>
+            <button class="btn primary" id="btn-export-pdf">Export PDF Report</button>
+          </div>
+        </div>
+
+        <div class="verdict-card" id="verdict-card">
+          <div class="verdict-badge" id="verdict-badge">—</div>
+          <div class="verdict-score" id="verdict-score">—</div>
+          <div class="verdict-desc" id="verdict-desc">—</div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Field-by-Field Findings</div>
+          <div class="findings" id="findings"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Scanned Evidence</div>
+          <div class="thumbs" id="results-thumbs"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Raw OCR Text (for manual verification)</div>
+          <pre class="raw-text" id="raw-text"></pre>
+        </div>
+      </section>
+
+      <!-- ===================== HISTORY ===================== -->
+      <section class="screen" id="screen-history" style="display:none">
+        <div class="screen-head">
+          <div>
+            <h1>Inspection History</h1>
+            <p class="muted">All saved inspections on this device.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="filter-bar">
+            <input type="text" id="history-search" placeholder="Search code, brand, location…">
+            <select id="history-filter-status">
+              <option value="">All statuses</option>
+              <option>Compliant</option>
+              <option>Needs Review</option>
+              <option>Non-Compliant</option>
+            </select>
+            <select id="history-filter-category">
+              <option value="">All categories</option>
+            </select>
+          </div>
+          <table class="table" id="history-table">
+            <thead>
+              <tr><th>Inspection</th><th>Product</th><th>Location</th><th class="col-submitter">Submitted By</th><th>Score</th><th>Status</th><th>Date</th><th></th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="empty-state" id="history-empty">No inspections saved yet.</div>
+        </div>
+      </section>
+
+      <!-- ===================== ANALYTICS ===================== -->
+      <section class="screen" id="screen-analytics" style="display:none">
+        <div class="screen-head">
+          <div>
+            <h1>Analytics</h1>
+            <p class="muted">Compliance trends across saved inspections.</p>
+          </div>
+        </div>
+        <div class="panel-grid">
+          <div class="panel">
+            <div class="panel-title">Status Breakdown</div>
+            <canvas id="chart-status" height="220"></canvas>
+          </div>
+          <div class="panel">
+            <div class="panel-title">By Product Category</div>
+            <canvas id="chart-category" height="220"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== RULES ===================== -->
+      <section class="screen" id="screen-rules" style="display:none">
+        <div class="screen-head">
+          <div>
+            <h1>Rules &amp; Standards</h1>
+            <p class="muted">Legal Metrology (Packaged Commodities) Rules, 2011 — editable rule set (stored as data, not hardcoded).</p>
+          </div>
+          <button class="btn secondary" id="btn-reset-rules">Reset to Defaults</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Required Declaration Fields</div>
+          <table class="table" id="rules-table">
+            <thead><tr><th>Field</th><th>Severity if missing</th><th>Guidance</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Thresholds</div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Minimum OCR confidence to auto-accept a field (%)</label>
+              <input type="number" id="rule-min-conf" min="0" max="100">
+            </div>
+            <div class="field">
+              <label>Minimum font prominence ratio (text height ÷ image height)</label>
+              <input type="number" id="rule-min-font" step="0.001" min="0" max="1">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn primary" id="btn-save-rules">Save Thresholds</button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- Firebase — real accounts (Authentication) + real cloud database (Firestore). See firebase-config.js for setup. -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script src="rules-engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
