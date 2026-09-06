@@ -77,13 +77,12 @@
 ============================================================================ */
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
+  apiKey: "AIzaSyC2Fbv0XSUHSqSnC-ezIv9O6SsnpjWuziM",
+  authDomain: "legalscan-ai-web-1ff48.firebaseapp.com",
+  projectId: "legalscan-ai-web-1ff48",
+  storageBucket: "legalscan-ai-web-1ff48.firebasestorage.app",
+  messagingSenderId: "580653211253",
+  appId: "1:580653211253:web:536e1f1a3fd044c645223c"
 
 // Used by app.js to detect whether the placeholders above have been
 // replaced yet, so it can show a clear banner instead of a login form
